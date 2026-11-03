@@ -36,6 +36,11 @@ MODELS: list[Model] = [
     Model("gpt-image-2.5-flare", "GPT Image 2.5 Flare", "openai", "Faster"),
     Model("gpt-image-2", "GPT Image 2", "openai"),
     Model("gpt-image-1.5", "GPT Image 1.5", "openai"),
+    # The 2.5 pair is reachable through OpenRouter too, which matters when the
+    # direct OpenAI account is out of credits — same models, different bill.
+    Model("openai/gpt-image-2.5-sunburst", "GPT Image 2.5 Sunburst", "openrouter",
+          "Best editing precision"),
+    Model("openai/gpt-image-2.5-flare", "GPT Image 2.5 Flare", "openrouter", "Faster"),
     Model("openai/gpt-image-2", "GPT Image 2", "openrouter"),
     Model("black-forest-labs/flux.2-pro", "FLUX 2 Pro", "openrouter"),
     Model("bytedance-seed/seedream-4.5", "Seedream 4.5", "openrouter"),

@@ -77,7 +77,7 @@ variables.
 | Variable | Purpose |
 |---|---|
 | `OPENAI_API_KEY` | Reaches the GPT Image models directly |
-| `OPENROUTER_API_KEY` | Reaches GPT Image, FLUX, Seedream and Gemini through one key |
+| `OPENROUTER_API_KEY` | Reaches GPT Image (2.5 included), FLUX, Seedream and Gemini through one key |
 | `STUDIO_PASSWORD` | Shared password for the UI. Blank disables authentication |
 | `STUDIO_OUTPUT_DIR` | Where generations are written (default `./output`) |
 | `STUDIO_PROVIDERS` | Restrict which providers are offered (see below) |
