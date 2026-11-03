@@ -80,11 +80,32 @@ variables.
 | `OPENROUTER_API_KEY` | Reaches GPT Image, FLUX, Seedream and Gemini through one key |
 | `STUDIO_PASSWORD` | Shared password for the UI. Blank disables authentication |
 | `STUDIO_OUTPUT_DIR` | Where generations are written (default `./output`) |
+| `STUDIO_PROVIDERS` | Restrict which providers are offered (see below) |
 | `PORT` | Port to serve on (default `8080`) |
 | `STUDIO_PORT_FALLBACKS` | Ports to try when `PORT` is taken (see below) |
 
 At least one API key is needed. The model dropdown greys out anything the
 configured keys can't reach.
+
+### Switching a provider off
+
+Holding a key is not the same as wanting to spend it. An account can run out of
+credits while its key stays perfectly valid — the key authenticates fine and
+every generation comes back `429 insufficient_quota`. Since the dropdown
+defaults to the first *available* model, it will keep selecting the dead
+provider and failing.
+
+Unsetting the key does not help: `run.sh` re-sources `~/.secrets` on every
+start and puts it back. Name the providers you want instead:
+
+```bash
+STUDIO_PROVIDERS=openrouter ./run.sh
+```
+
+Anything omitted is treated as having no key: greyed out in the dropdown, and
+refused server-side with a message naming the switch rather than a confusing
+"no API key configured". Blank or unset means all providers, so the default is
+unchanged.
 
 ## Security
 

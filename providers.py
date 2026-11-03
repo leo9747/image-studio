@@ -55,7 +55,40 @@ SIZES = [
 QUALITIES = ["high", "medium", "low", "auto"]
 
 
+PROVIDERS = ("openai", "openrouter")
+
+
+def _enabled() -> frozenset[str]:
+    """Providers the operator has switched on. Blank or unset means all.
+
+    Holding a key is not the same as wanting to spend it: an account can be out
+    of credits while its key stays perfectly valid, and the UI would otherwise
+    keep defaulting to it and failing with a 429. `run.sh` re-sources
+    ~/.secrets, so unsetting a key cannot express that — hence an explicit
+    switch rather than relying on the environment.
+
+    Read once at import, like STUDIO_PASSWORD. An unrecognised name is fatal
+    rather than ignored: silently falling back to "all providers" would turn a
+    typo into the exact failure this setting exists to prevent.
+    """
+    raw = os.environ.get("STUDIO_PROVIDERS", "")
+    chosen = {p.strip().lower() for p in raw.split(",") if p.strip()}
+    if not chosen:
+        return frozenset(PROVIDERS)
+    unknown = chosen - set(PROVIDERS)
+    if unknown:
+        raise ValueError(
+            f"STUDIO_PROVIDERS names unknown provider(s): {', '.join(sorted(unknown))}."
+            f" Valid values: {', '.join(PROVIDERS)}")
+    return frozenset(chosen)
+
+
+ENABLED = _enabled()
+
+
 def key_for(provider: str) -> str | None:
+    if provider not in ENABLED:
+        return None
     return os.environ.get("OPENAI_API_KEY" if provider == "openai" else "OPENROUTER_API_KEY")
 
 
@@ -117,6 +150,10 @@ async def _openrouter(client, model, prompt, size, quality, references) -> bytes
 async def generate_one(provider: str, model: str, prompt: str, size: str,
                        quality: str, references: list[bytes]) -> bytes:
     if not key_for(provider):
+        if provider not in ENABLED:
+            raise RuntimeError(
+                f"{provider} is switched off by STUDIO_PROVIDERS"
+                f" (currently: {', '.join(sorted(ENABLED))})")
         raise RuntimeError(f"No API key configured for {provider}")
     backend = _openai if provider == "openai" else _openrouter
     async with httpx.AsyncClient(timeout=TIMEOUT) as client:
