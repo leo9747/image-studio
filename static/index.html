@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Image Studio</title>
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+
+<header class="bar">
+  <h1>Image Studio</h1>
+  <span class="bar__note" id="provider-note"></span>
+</header>
+
+<div id="gate" class="gate" hidden>
+  <form class="gate__form" id="gate-form">
+    <label class="label" for="gate-input">Password</label>
+    <input class="input" id="gate-input" type="password" autocomplete="current-password" required>
+    <button class="btn" type="submit">Unlock</button>
+    <p class="gate__error" id="gate-error" hidden>Rejected.</p>
+  </form>
+</div>
+
+<main class="shell" id="shell" hidden>
+
+  <form class="panel" id="form">
+    <label class="label" for="prompt">Prompt</label>
+    <textarea class="input input--area" id="prompt" rows="7"
+      placeholder="a floating island with a hexagonal lattice dome, warm colours"></textarea>
+
+    <label class="label" for="style">Style suffix
+      <span class="label__hint">appended to every prompt</span>
+    </label>
+    <textarea class="input input--area" id="style" rows="5"
+      placeholder="futuristic, solarpunk, illustration in the style of moebius, plain white background"></textarea>
+
+    <div class="row">
+      <div class="field">
+        <label class="label" for="model">Model</label>
+        <select class="input" id="model"></select>
+      </div>
+    </div>
+
+    <div class="row row--split">
+      <div class="field">
+        <label class="label" for="size">Size</label>
+        <select class="input" id="size"></select>
+      </div>
+      <div class="field">
+        <label class="label" for="quality">Quality</label>
+        <select class="input" id="quality"></select>
+      </div>
+      <div class="field">
+        <label class="label" for="variations">Variations</label>
+        <input class="input" id="variations" type="number" min="1" max="8" value="4">
+      </div>
+    </div>
+
+    <label class="label" for="refs">Reference images
+      <span class="label__hint">style conditioning</span>
+    </label>
+    <input class="input input--file" id="refs" type="file" accept="image/*" multiple>
+    <ul class="refs" id="ref-list"></ul>
+
+    <button class="btn btn--go" id="go" type="submit">Generate</button>
+    <p class="panel__status" id="status"></p>
+  </form>
+
+  <section class="results">
+    <div class="results__bar">
+      <span class="label">Show</span>
+      <div class="segmented" id="filter">
+        <button type="button" data-filter="all" class="is-on">All</button>
+        <button type="button" data-filter="favorite">Favourites</button>
+      </div>
+      <span class="label">Backdrop</span>
+      <div class="segmented" id="backdrop">
+        <button type="button" data-bg="checker" class="is-on">Checker</button>
+        <button type="button" data-bg="white">White</button>
+        <button type="button" data-bg="page">Page</button>
+        <button type="button" data-bg="ink">Ink</button>
+      </div>
+      <label class="toggle"><input type="checkbox" id="keyout"> Remove white</label>
+      <label class="toggle"><input type="checkbox" id="crop"> Crop to subject</label>
+    </div>
+    <div class="grid" id="grid">
+      <p class="empty">Nothing generated yet.</p>
+    </div>
+  </section>
+
+</main>
+
+<div class="lightbox" id="lightbox" hidden>
+  <img id="lightbox-img" alt="">
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
